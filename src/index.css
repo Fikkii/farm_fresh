@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@plugin "./hero.ts"; 
+
+/* Tell Tailwind where to find HeroUI styles */
+@source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+
+/* (Optional) Force dark mode support */
+@custom-variant dark (&:is(.dark *));
