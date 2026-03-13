@@ -14,3 +14,10 @@ body {
   height: 100vh;
   width: 100%;
 }
+
+.active {
+  background-color: white;
+  padding: 10px;
+  color: #66BB6A;
+  border-radius: 10px;
+}

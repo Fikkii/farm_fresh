@@ -7,7 +7,7 @@ export default function CategoriesSlide(){
           <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
       </div>
-      <div className="flex gap-[24px]">
+      <div className="flex gap-[24px] overflow-x-scroll md:overflow-x-hidden">
         <CategoryCard />
         <CategoryCard title="Vegetables" image="/categories/Fruits-2.png" borderColor="orange"/>
         <CategoryCard title="Fruits" image="/categories/Fruits-1.png" borderColor="blue"/>

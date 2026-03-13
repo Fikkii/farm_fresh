@@ -12,7 +12,7 @@ export default function ProductSlide({ title = "Featured Products", products = n
 
   return (
     <div className="w-full my-4">
-      <div className="flex items-center font-bold mt-[48px] justify-between mb-4">
+      <div className="flex items-center overflox-x-scroll md:overflow-x-hidden font-bold mt-[48px] justify-between mb-4">
         <div>{title}</div>
         <div className="flex gap-2 items-center">
           <span>See More</span>
