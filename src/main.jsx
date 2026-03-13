@@ -7,9 +7,10 @@ import { RouterProvider } from 'react-router-dom'
 import {HeroUIProvider} from '@heroui/react'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  <div>
+    <RouterProvider router={routes} >
       <HeroUIProvider>
-        <RouterProvider router={routes} />,
       </HeroUIProvider>
-  </StrictMode>,
+    </RouterProvider>
+  </div>,
 )

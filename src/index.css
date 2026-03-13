@@ -6,3 +6,11 @@
 
 /* (Optional) Force dark mode support */
 @custom-variant dark (&:is(.dark *));
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100%;
+}
