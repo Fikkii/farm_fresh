@@ -5,12 +5,15 @@ import App from './App.jsx'
 import { routes } from './routes.jsx'
 import { RouterProvider } from 'react-router-dom'
 import {HeroUIProvider} from '@heroui/react'
+import { UserProvider } from './contexts/userContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <div>
-    <RouterProvider router={routes} >
-      <HeroUIProvider>
-      </HeroUIProvider>
-    </RouterProvider>
+    <UserProvider>
+      <RouterProvider router={routes} >
+        <HeroUIProvider>
+        </HeroUIProvider>
+      </RouterProvider>
+    </UserProvider>
   </div>,
 )

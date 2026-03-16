@@ -32,13 +32,13 @@ export default function CardComponent({products}) {
 }
 
   return (
-    <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
+    <div className="gap-[24px] grid grid-cols-2 sm:grid-cols-4">
       {list.map((item, index) => (
         /* eslint-disable no-console */
         <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => console.log("item pressed")}>
           <CardBody className="overflow-visible p-2">
             <Image
-              alt={item.title}
+              alt={item.productName}
               className="w-full object-cover h-[192px]"
               radius="lg"
               shadow="sm"
@@ -48,11 +48,11 @@ export default function CardComponent({products}) {
           </CardBody>
           <CardFooter className="text-small flex-col items-start">
             <div>
-              <span className="text-[14px]">{item.title}</span>
+              <span className="text-[14px]">{item.productName}</span>
             </div>
             <div className="flex justify-between w-full gap-4">
               <div>
-                <span className="font-bold">{item.price}</span>/{item.measurement}
+                <span className="font-bold">{item.price}</span>/kg
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" fill="#66BB6A" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-7">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
