@@ -37,7 +37,7 @@ export default function FarmDetail(){
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-6">
+      <div className="flex flex-col md:grid grid-cols-2 gap-4 mt-6">
         <div className="flex flex-col gap-6">
           <div className="flex gap-5 items-center">
             <svg className="w-[5%] p-[10px] bg-green-200 border rounded-[10px]" xmlns="http://www.w3.org/2000/svg" fill="#4CAF50" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">

@@ -69,7 +69,7 @@ export const routes= createBrowserRouter([
   },
   {
     path: "/auth",
-    Component: AuthLayout,
+    Component: DefaultLayout,
     children: [
       {
         path: "login",

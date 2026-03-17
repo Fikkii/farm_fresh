@@ -71,7 +71,7 @@ export function FarmsList({farms}){
   const navigate = useNavigate()
 
   return (
-    <div className="gap-[24px] grid grid-cols-2 sm:grid-cols-4 mt-[48px]">
+    <div className="gap-[24px] flex flex-col flex-wrap md:grid grid-cols-4 mt-[48px]">
       {farms.map((farm, index) => (
         <Card key={farm.$id} isPressable shadow="sm">
           <Link to={`/farms/${farm.$id}`}>

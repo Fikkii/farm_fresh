@@ -18,9 +18,9 @@ export default function AppNavbar() {
   ];
 
   return (
-    <nav className="w-full h-16 bg-[#4CAF50] text-white flex items-center justify-between px-4">
-      <div className="text-lg font-bold">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <nav className="w-full h-16 bg-[#4CAF50] relative text-white flex items-center justify-between px-4">
+      <div className="flex items-center gap-2 text-lg font-bold">
+        <svg className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
 </svg>
 
@@ -42,11 +42,20 @@ export default function AppNavbar() {
 </svg> }
         />
       </div>
+      <div className={`bg-[#4CAF50] py-[30px] px-[16px] gap-[12px] z-99 flex flex-col w-[50%] absolute translate-y-[100%] bottom-0 left-0 transition-transform duration-300 ${ !isMenuOpen ? "translate-x-[-100%]" : "translate-x-0" }`} >
+        {
+          menuItems.map((item, index) => (
+            <NavLink onClick={() => setIsMenuOpen(!isMenuOpen)} key={index} to={item.path} className="hover:text-yellow-100">{item.name}</NavLink>
+          ))
+        }
+      </div>
       <div className="hidden md:flex items-center gap-4">
-        <NavLink to="/" className="hover:text-yellow-100">Home </NavLink>
-        <NavLink to="/categories" className="hover:text-yellow-100">Categories</NavLink>
-        <NavLink to="/farms" className="hover:text-yellow-100">Farms</NavLink>
-        <NavLink to="/orders" className="hover:text-yellow-100">Orders</NavLink>
+        {
+          menuItems.map((item, index) => (
+            <NavLink key={index} to={item.path} className="hover:text-yellow-100">{item.name}</NavLink>
+          ))
+        }
+            <NavLink to="auth/login" className="hover:text-yellow-100">Login</NavLink>
       </div>
       <div className="flex gap-4">
         <a href="/orders" className="hover:text-gray-400"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" /> </svg> </a>
