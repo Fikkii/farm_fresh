@@ -5,8 +5,7 @@ export default function WhyShop(){
         <h2 className="font-bold text-[26px] text-center">Why Shop on FarmFresh</h2>
         <div className="text-center text-[#757575]">Experience the difference of food grown with care and delivered with passion</div>
       </div>
-      <div className="flex justify-center items-center mt-[24px] bg-[#2E7D3233] h-[300px] p-[24px]">
-        <Card />
+      <div className="flex flex-col md:flex-row gap-6 justify-center items-center mt-[24px] bg-[#2E7D3233] p-[24px]">
         <Card />
         <Card />
         <Card />

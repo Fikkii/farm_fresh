@@ -2,8 +2,8 @@ import { Button, Input } from "@heroui/react";
 
 export default function Footer(){
   return (
-    <div className="mt-[92px] px-[24px] py-[39px] flex justify-between gap-4 bg-white">
-      <div className="w-[20%] text-[#757575]">
+    <div className="mt-[92px] px-[24px] py-[39px] flex flex-col md:flex-row justify-between gap-4 bg-white">
+      <div className="md:w-[20%] text-[#757575]">
         <img src="/logo.png" height="53px" />
         <div>
           Connecting you directly with the freshest

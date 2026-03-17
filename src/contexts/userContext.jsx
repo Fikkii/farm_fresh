@@ -40,6 +40,14 @@ export const UserProvider = ({ children }) => {
     setUser(await account.get());
   }
 
+  async function loginWithGoogle() {
+    await account.createOAuth2Session({
+      provider: 'google',
+      success: 'http://localhost:5173/',
+      failure: 'http://localhost:5173/auth/login',
+    })
+  }
+
   async function verifyEmail() {
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId');
@@ -64,6 +72,7 @@ export const UserProvider = ({ children }) => {
     login,
     verifyEmail,
     sendVerificationEmail,
+    loginWithGoogle
   };
 
   return (

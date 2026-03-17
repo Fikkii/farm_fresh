@@ -33,7 +33,7 @@ export default function TopRatedFarms(){
           </svg>
         </div>
       </div>
-      <div className="bg-[#FAFAFA] p-[24px] flex gap-[9px]">
+      <div className="bg-[#FAFAFA] p-[24px] flex flex-col md:flex-row gap-[9px]">
         <Card color="#F8E4E4" img="/farms/image-1.png" />
         <Card color="#EAF7EE" img="/farms/image-2.png" />
         <Card color="#FBF4E7" img="/farms/image.png" />

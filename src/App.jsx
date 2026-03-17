@@ -6,10 +6,6 @@ import WhyShop from './components/WhyShop'
 import HowItWorks from './components/HowItWorks'
 import { Button } from '@heroui/react'
 
-const top_picks = [
-  
-]
-
 function App() {
   return (
     <div>

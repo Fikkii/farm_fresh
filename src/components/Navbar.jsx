@@ -20,6 +20,10 @@ export default function AppNavbar() {
   return (
     <nav className="w-full h-16 bg-[#4CAF50] text-white flex items-center justify-between px-4">
       <div className="text-lg font-bold">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+</svg>
+
         <img src="/logo.png" alt="Logo" className="h-[70px] inline-block mr-2" />
       </div>
       <div className="flex gap-4">

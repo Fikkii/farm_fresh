@@ -1,4 +1,24 @@
+import { Button } from "@heroui/react"
+
 export default function CategoriesSlide(){
+  const categories = [
+    {
+      name: "Vegetables",
+      image: "/categories/Fruits-1.png"
+    },
+    {
+      name: "Fruits",
+      image: "/categories/Fruits-1.png"
+    },
+    {
+      name: "Grains",
+      image: "/categories/Fruits-1.png"
+    },
+    {
+      name: "Diaries",
+      image: "/categories/Fruits-1.png"
+    },
+  ]
   return (
     <div>
       <div className="flex gap-2 items-center font-bold text-[26px] mt-[48px]">
@@ -7,12 +27,19 @@ export default function CategoriesSlide(){
           <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
       </div>
-      <div className="flex gap-[24px] overflow-x-scroll md:overflow-x-hidden">
-        <CategoryCard />
-        <CategoryCard title="Vegetables" image="/categories/Fruits-2.png" borderColor="orange"/>
-        <CategoryCard title="Fruits" image="/categories/Fruits-1.png" borderColor="blue"/>
-        <CategoryCard title="Grains" image="/categories/Meat.png" borderColor="pink"/>
-        <CategoryCard title="Diaries" image="/categories/Vegetables.png" borderColor="indigo"/>
+      <div className="flex overflow-x-scroll gap-[12px] mt-2 overflow-x-scroll md:overflow-x-hidden">
+      {
+        categories.map((cat, index) => (
+          <Button color="success" className="text-white" key={index}>{cat.name}</Button>
+        ))
+      }
+      </div>
+      <div className="md:flex hidden overflow-x-scroll gap-[24px] overflow-x-scroll md:overflow-x-hidden">
+      {
+        categories.map((cat, index) => (
+          <CategoryCard key={index} title={cat.name} image={cat.image} borderColor={index % 2 === 0 ? "red" : "blue"} />
+        ))
+      }
       </div>
     </div>
   )

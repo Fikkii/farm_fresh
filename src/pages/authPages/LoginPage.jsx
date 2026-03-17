@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   const [error, setError] = useState(null);
 
-  const { user, login } = useUser();
+  const { user, login, loginWithGoogle } = useUser();
 
   function handleLogin(e) {
     e.preventDefault();
@@ -37,7 +37,7 @@ export default function LoginPage() {
           type="submit"
           >Login</Button>
         <div className="border border-gray-300 my-2"></div>
-        <Button className="rounded-full bg-initial border border-gray-500" color="default" variant="flat" startContent="<img src={{Logo}} />">Continue with Google</Button>
+        <Button onClick={loginWithGoogle} className="rounded-full bg-initial border border-gray-500" color="default" variant="flat" startContent="<img src={{Logo}} />">Continue with Google</Button>
         <Button className="rounded-full bg-initial border border-gray-500" color="default" variant="flat">Continue with Apple</Button>
         <p className="text-center">Don't have an account? <Link className="text-green-500" to="/auth/signup">Sign up</Link></p>
 
