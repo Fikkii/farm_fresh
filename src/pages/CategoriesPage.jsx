@@ -51,11 +51,11 @@ export default function CategoriesPage(){
     <div>
       <h2 className="text-[32px] font-bold">Shop by Categories</h2>
       <div className="text-gray-400">Fresh farm produce delivered directly by local farmers to your doorstep.</div>
-      <div className="flex gap-2 mt-[48px]">
-          <Button onClick={() => handleFilter("All")} color="success" variant="flat" >All</Button>
+      <div className="flex gap-2 mt-[48px] overflow-x-auto pb-2 no-scrollbar">
+          <Button onClick={() => handleFilter("All")} color="success" variant="flat" className="min-w-fit">All</Button>
         {
           categories.map((value, index) => (
-            <Button key={index} className={value.name == selectedCategory ? "bg-green-500 text-white" : ''} onClick={() => handleFilter(value.name)} color="success" variant="flat" >{value.name}</Button>
+            <Button key={index} className={`${value.name == selectedCategory ? "bg-green-500 text-white" : ''} min-w-fit`} onClick={() => handleFilter(value.name)} color="success" variant="flat" >{value.name}</Button>
           ))
         }
       </div>

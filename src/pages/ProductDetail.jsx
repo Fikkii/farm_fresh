@@ -72,11 +72,13 @@ export default function ProductDetail(){
               </div>
             </div>
             <div className="flex flex-col gap-[24px]">
-              <div className="flex gap-1 w-full w-max-[100px]">
-                <Button className="text-white" color="success">+</Button>
-                <Input classNames={{ base: "w-[60px] text-center" }} defaultValue={1} />
-                <Button className="text-white" color="success">-</Button>
-                <Button className="ml-4 text-white font-bold w-full" color="success">Add to Cart</Button>
+              <div className="flex flex-wrap gap-2 items-center w-full">
+                <div className="flex gap-1 items-center">
+                  <Button className="text-white min-w-[40px]" color="success">+</Button>
+                  <Input classNames={{ base: "w-[60px]", input: "text-center" }} defaultValue={1} />
+                  <Button className="text-white min-w-[40px]" color="success">-</Button>
+                </div>
+                <Button className="text-white font-bold flex-1" color="success">Add to Cart</Button>
               </div>
               <div>
                 <Button className="px-[16px] bg-white hover:bg-green-500 hover:text-white border py-[16px] font-bold w-full" color="success" variant="flat">Buy Now</Button>

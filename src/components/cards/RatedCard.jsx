@@ -32,7 +32,7 @@ export default function CardComponent({products}) {
 }
 
   return (
-    <div className="gap-[24px] flex flex-col md:grid grid-cols-2 sm:grid-cols-4">
+    <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
       {list.map((item, index) => (
         /* eslint-disable no-console */
         <Card key={index} isPressable shadow="sm" onPress={() => console.log("item pressed")}>

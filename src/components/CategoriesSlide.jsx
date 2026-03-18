@@ -15,23 +15,16 @@ export default function CategoriesSlide(){
 
   return (
     <div>
-      <div className="flex gap-2 items-center font-bold text-[26px] mt-[48px]">
+      <div className="flex gap-2 items-center font-bold text-[22px] md:text-[26px] mt-[48px]">
         Shop By Category
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6 md:size-8 text-green-600">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
       </div>
-      <div className="flex overflow-x-scroll gap-[24px] overflow-x-scroll md:overflow-x-hidden">
+      <div className="flex overflow-x-auto gap-4 py-4 no-scrollbar">
       {
         categories.map((cat, index) => (
-          <Button className="p-2 border block w-[100%] w-max-[200px]" key={index}>{cat.name}</Button>
-        ))
-      }
-      </div>
-      <div className="md:flex hidden overflow-x-scroll gap-[24px] overflow-x-scroll md:overflow-x-hidden">
-      {
-        categories.map((cat, index) => (
-          <CategoryCard key={index} title={cat.name} image={cat.image} borderColor={index % 2 === 0 ? "red" : "blue"} />
+          <CategoryCard key={index} title={cat.name} image={cat.image} borderColor={index % 2 === 0 ? "#4CAF50" : "#EAB308"} />
         ))
       }
       </div>
@@ -39,11 +32,11 @@ export default function CategoriesSlide(){
   )
 }
 
-export function CategoryCard({title = "Meat", image = "/categories/Fruits.png", borderColor="red"}){
+export function CategoryCard({title = "Meat", image = "/categories/Fruits.png", borderColor="#4CAF50"}){
   return (
-    <div style={{ borderColor: borderColor }} className="border relative mt-[36px] grid place-items-center rounded-[24px] bg-white w-[233px] h-[245px]">
-      <img src={image} className="h-[70%]" />
-      <span className="px-[12px] py-[3.5px] bg-red-500 text-white absolute top-2 left-2 rounded-[6px]">{title}</span>
+    <div style={{ borderColor: borderColor }} className="border-2 relative flex-shrink-0 grid place-items-center rounded-[24px] bg-white w-[160px] h-[180px] md:w-[233px] md:h-[245px] transition-transform hover:scale-105">
+      <img src={image} className="h-[60%] md:h-[70%] object-contain" alt={title} />
+      <span style={{ backgroundColor: borderColor }} className="px-[12px] py-[3.5px] text-white absolute top-3 left-3 rounded-[6px] text-xs md:text-sm font-bold shadow-sm">{title}</span>
     </div>
   )
 }

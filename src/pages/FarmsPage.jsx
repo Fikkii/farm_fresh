@@ -29,10 +29,10 @@ export default function FarmsPage(){
     <div className="mt-[48px]">
       <h2 className="text-[32px] font-bold">Explore Local Farms</h2>
       <div className="text-gray-400">Farm produce delivered straigth from the source to your kitchen</div>
-      <div className="mt-[48px] flex items-center gap-4">
+      <div className="mt-[24px] md:mt-[48px] flex flex-col md:flex-row items-center gap-4">
 
         <Input
-            className="w-[40%]"
+            className="w-full md:w-[40%]"
             placeholder="Type to search..."
             type="search"
     variant="bordered"
@@ -46,12 +46,12 @@ export default function FarmsPage(){
   <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
   <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
 </svg>
-         } color="success" size="sm" className="max-w-[217px]" label="Current Location">
+         } color="success" size="sm" className="w-full md:max-w-[217px]" label="Current Location">
             {currentLocation.map((location) => (
               <SelectItem key={location.key}>{location.label}</SelectItem>
             ))}
           </Select>
-          <Select className="max-w-[217px]" color="success" size="sm" label="Filter By Category">
+          <Select className="w-full md:max-w-[217px]" color="success" size="sm" label="Filter By Category">
             <SelectItem>Vegetables</SelectItem>
             <SelectItem>Fruits</SelectItem>
             <SelectItem>Grains</SelectItem>
@@ -71,9 +71,9 @@ export function FarmsList({farms}){
   const navigate = useNavigate()
 
   return (
-    <div className="gap-[24px] flex flex-col flex-wrap md:grid grid-cols-4 mt-[48px]">
+    <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-[24px] md:mt-[48px]">
       {farms.map((farm, index) => (
-        <Card key={farm.$id} isPressable shadow="sm">
+        <Card key={farm.$id} isPressable shadow="sm" className="w-full">
           <Link to={`/farms/${farm.$id}`}>
           <CardBody className="overflow-visible p-0">
             <Image

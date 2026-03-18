@@ -6,7 +6,7 @@ export default function CardComponent({data}) {
   const navigate = useNavigate();
 
   return (
-    <div className="gap-[24px] flex flex-col md:grid grid-cols-2 sm:grid-cols-4">
+    <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
       {list?.map((item, index) => (
         /* eslint-disable no-console */
         <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => navigate(`/product/${item.$id}`)}>

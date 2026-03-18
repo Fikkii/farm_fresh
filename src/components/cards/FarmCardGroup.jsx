@@ -17,7 +17,7 @@ export default function CardComponent({data, title}) {
           </svg>
         </div>
       </div>
-      <div className="gap-[24px] flex flex-col grid grid-cols-2 sm:grid-cols-4">
+      <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {data.map((item, index) => (
           /* eslint-disable no-console */
           <Card key={index} isPressable shadow="sm" onPress={() =>  navigate(`/farms/${item.$id}`)}>
