@@ -7,12 +7,12 @@ export default function ProductDetail(){
   console.log(product);
   return (
     <div>
-      <div className="grid grid-cols-2 gap-4 mt-6">
+      <div className="grid md:grid-cols-2 gap-4 mt-6">
         <Image
         isZoomed
         alt={product.productName}
         src={product.img}
-        className="h-[460px] w-[100%] bg-black object-cover rounded-lg"
+        className="h-[260px] md:h-[460px] w-[100%] bg-black object-cover rounded-lg"
         />
 
         <Card>

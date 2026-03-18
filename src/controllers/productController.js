@@ -49,7 +49,10 @@ export const fetchAllProducts = async () => {
     const result = await databases.listDocuments(
       '69b5a810001139b4e286',
       'products',
-      [Query.orderDesc('$createdAt')] 
+      [
+        Query.orderDesc('$createdAt'),
+        Query.select(['*', 'categories.*', 'farms.*']) 
+      ] 
     );
 
 

@@ -74,7 +74,7 @@ export const routes= createBrowserRouter([
   },
   {
     path: "/auth",
-    Component: DefaultLayout,
+    Component: AuthLayout,
     children: [
       {
         path: "login",
