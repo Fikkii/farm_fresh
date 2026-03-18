@@ -1,8 +1,8 @@
-import {Card, CardBody, CardFooter, Image} from "@heroui/react";
+import {Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
 
-export default function CardComponent({products}) {
+export default function CardComponent({products, isLoading}) {
   let list = products
-  if (!products){
+  if (!products && !isLoading){
     list = [
       {
         title: "Green Valley Farm",
@@ -31,14 +31,43 @@ export default function CardComponent({products}) {
     ];
 }
 
+  if (isLoading) {
+    return (
+      <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        {[...Array(4)].map((_, index) => (
+          <Card key={index} shadow="sm">
+            <CardBody className="overflow-visible p-0">
+              <Skeleton className="rounded-lg">
+                <div className="h-[192px] rounded-lg bg-default-300"></div>
+              </Skeleton>
+            </CardBody>
+            <CardFooter className="text-small flex-col items-start gap-2">
+              <Skeleton className="w-4/5 rounded-lg">
+                <div className="h-3 w-4/5 rounded-lg bg-default-200"></div>
+              </Skeleton>
+              <div className="flex justify-between w-full gap-4">
+                <Skeleton className="w-1/4 rounded-lg">
+                  <div className="h-3 w-1/4 rounded-lg bg-default-200"></div>
+                </Skeleton>
+                <Skeleton className="w-1/4 rounded-lg">
+                  <div className="h-3 w-1/4 rounded-lg bg-default-200"></div>
+                </Skeleton>
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         /* eslint-disable no-console */
         <Card key={index} isPressable shadow="sm" onPress={() => console.log("item pressed")}>
           <CardBody className="overflow-visible p-0">
             <Image
-              alt={item.title}
+              alt={item.title || item.productName}
               className="w-full object-cover h-[192px]"
               radius="lg"
               shadow="sm"
@@ -48,7 +77,7 @@ export default function CardComponent({products}) {
           </CardBody>
           <CardFooter className="text-small flex-col items-start">
             <div>
-              <b className="text-[18px]">{item.title}</b>
+              <b className="text-[18px]">{item.title || item.productName}</b>
             </div>
             <div className="flex justify-between w-full gap-4">
             <p className="flex items-center text-[#EAB308]">

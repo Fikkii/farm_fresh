@@ -1,21 +1,23 @@
 import RatedCard from "../components/cards/RatedCard";
 import PricedCard from "../components/cards/PricedCard";
+import {Button, Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 
-export default function ProductSlide({ title = "Featured Products", data = null, type }) {
+export default function ProductSlide({ title = "Featured Products", products = null, type, isLoading = false }) {
   let card;
 
   switch (type) {
     case "rated":
-      card = <RatedCard data={data} />;
+      card = <RatedCard products={products} isLoading={isLoading} />;
       break;
     case "priced":
-      card = <PricedCard data={data} />;
+      card = <PricedCard data={products} isLoading={isLoading} />;
       break;
     case "buy_add":
-      card = <CartCard data={data} />;
+      card = <CartCard data={products} isLoading={isLoading} />;
       break;
     default:
-      card = <PricedCard data={data} />;
+      card = <PricedCard data={products} isLoading={isLoading} />;
   }
 
   return (
@@ -39,14 +41,44 @@ export default function ProductSlide({ title = "Featured Products", data = null,
   );
 }
 
-import {Button, Card, CardBody, CardFooter, Image} from "@heroui/react";
-import { useNavigate } from "react-router-dom";
-
-export function CartCard({data}) {
+export function CartCard({data, isLoading}) {
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        {[...Array(4)].map((_, index) => (
+          <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} shadow="sm">
+            <CardBody className="overflow-visible p-2">
+              <Skeleton className="rounded-lg">
+                <div className="h-[192px] rounded-lg bg-default-300"></div>
+              </Skeleton>
+            </CardBody>
+            <CardFooter className="text-small flex-col items-start gap-2">
+              <div className="flex w-full justify-between">
+                <Skeleton className="w-3/5 rounded-lg">
+                  <div className="h-4 w-3/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+                <Skeleton className="w-1/5 rounded-lg">
+                  <div className="h-4 w-1/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+              </div>
+              <Skeleton className="w-2/5 rounded-lg">
+                <div className="h-4 w-2/5 rounded-lg bg-default-200"></div>
+              </Skeleton>
+              <Skeleton className="w-full rounded-lg mt-2">
+                <div className="h-10 w-full rounded-lg bg-default-200"></div>
+              </Skeleton>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-      {data.map((item, index) => (
+      {data?.map((item, index) => (
         /* eslint-disable no-console */
         <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => navigate(`/product/${item.$id}`)}>
           <CardBody className="overflow-visible p-2">

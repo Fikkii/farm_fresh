@@ -12,15 +12,25 @@ import FarmCardGroup from './components/cards/FarmCardGroup'
 function App() {
   const [farms, setFarms] = useState([]);
   const [products, setProducts] = useState([]);
+  const [isFarmsLoading, setIsFarmsLoading] = useState(true);
+  const [isProductsLoading, setIsProductsLoading] = useState(true);
 
   useEffect(() => {
     fetchAllFarms().then(data => {
       setFarms(data.slice(0, 4))
-    }).catch(error => console.error(error))
+      setIsFarmsLoading(false);
+    }).catch(error => {
+      console.error(error);
+      setIsFarmsLoading(false);
+    })
 
-  fetchAllProducts().then(data => {
-    setProducts(data.slice(0, 8))
-  }).catch(error => console.error(error))
+    fetchAllProducts().then(data => {
+      setProducts(data.slice(0, 8))
+      setIsProductsLoading(false);
+    }).catch(error => {
+      console.error(error);
+      setIsProductsLoading(false);
+    })
 
     return () => {
       setFarms([]);
@@ -54,10 +64,10 @@ function App() {
     </div>
   </div>
 </div>
-        <FarmCardGroup title='Nearby Farms' data={farms} />
+        <FarmCardGroup title='Nearby Farms' data={farms} isLoading={isFarmsLoading} />
         <CategoriesSlide />
-        <ProductSlide title="Todays's Fresh Pick" data={products} type="buy_add"  />
-        <TopRatedFarms data={farms} />
+        <ProductSlide title="Todays's Fresh Pick" products={products} type="buy_add" isLoading={isProductsLoading} />
+        <TopRatedFarms data={farms} isLoading={isFarmsLoading} />
         <WhyShop />
         <HowItWorks />
     </div>

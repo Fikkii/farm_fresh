@@ -1,9 +1,38 @@
-import {Card, CardBody, CardFooter, Image} from "@heroui/react";
+import {Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 
-export default function CardComponent({data}) {
+export default function CardComponent({data, isLoading}) {
   let list = data
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        {[...Array(4)].map((_, index) => (
+          <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} shadow="sm">
+            <CardBody className="overflow-visible p-2">
+              <Skeleton className="rounded-lg">
+                <div className="h-[192px] rounded-lg bg-default-300"></div>
+              </Skeleton>
+            </CardBody>
+            <CardFooter className="text-small flex-col items-start gap-2">
+              <Skeleton className="w-3/5 rounded-lg">
+                <div className="h-3 w-3/5 rounded-lg bg-default-200"></div>
+              </Skeleton>
+              <div className="flex justify-between w-full gap-4">
+                <Skeleton className="w-2/5 rounded-lg">
+                  <div className="h-3 w-2/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+                <Skeleton className="w-8 h-8 rounded-full">
+                  <div className="w-8 h-8 rounded-full bg-default-200"></div>
+                </Skeleton>
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">

@@ -1,16 +1,19 @@
-import { Button, ButtonGroup } from "@heroui/react"
+import { Button, ButtonGroup, Skeleton } from "@heroui/react"
 import { fetchCategories } from "../controllers/productController"
 import { useEffect, useState } from "react"
 
 export default function CategoriesSlide(){
   const [categories, setCategories] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchCategories().then(categories => {
-      console.log(categories[0].products)
       setCategories(categories)
+      setIsLoading(false)
     }).catch(error => {
-      console.error("Error fetching categories", error)})
+      console.error("Error fetching categories", error)
+      setIsLoading(false)
+    })
   }, [])
 
   return (
@@ -22,11 +25,19 @@ export default function CategoriesSlide(){
         </svg>
       </div>
       <div className="flex overflow-x-auto gap-4 py-4 no-scrollbar">
-      {
+      {isLoading ? (
+        [...Array(6)].map((_, index) => (
+          <div key={index} className="flex-shrink-0 w-[160px] h-[180px] md:w-[233px] md:h-[245px]">
+            <Skeleton className="rounded-[24px] h-full w-full">
+              <div className="h-full w-full bg-default-300"></div>
+            </Skeleton>
+          </div>
+        ))
+      ) : (
         categories.map((cat, index) => (
           <CategoryCard key={index} title={cat.name} image={cat.image} borderColor={index % 2 === 0 ? "#4CAF50" : "#EAB308"} />
         ))
-      }
+      )}
       </div>
     </div>
   )

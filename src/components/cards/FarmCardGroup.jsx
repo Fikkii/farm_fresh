@@ -1,8 +1,46 @@
-import {Card, CardBody, CardFooter, Image} from "@heroui/react";
+import {Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
 import { useNavigate } from "react-router-dom";
 
-export default function CardComponent({data, title}) {
+export default function CardComponent({data, title, isLoading}) {
   const navigate = useNavigate()
+
+  if (isLoading) {
+    return (
+      <div>
+        <div className="flex items-center overflox-x-scroll md:overflow-x-hidden font-bold mt-[48px] justify-between mb-4">
+          <div className="text-[26px]">
+            {title}
+            <div className="font-normal text-lg text-[#757575]">Fresh from our fields this morning</div>
+          </div>
+        </div>
+        <div className="gap-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {[...Array(4)].map((_, index) => (
+            <Card key={index} shadow="sm">
+              <CardBody className="overflow-visible p-0">
+                <Skeleton className="rounded-lg">
+                  <div className="h-[192px] rounded-lg bg-default-300"></div>
+                </Skeleton>
+              </CardBody>
+              <CardFooter className="text-small flex-col items-start gap-2">
+                <Skeleton className="w-3/5 rounded-lg">
+                  <div className="h-3 w-3/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+                <div className="flex justify-between w-full gap-4">
+                  <Skeleton className="w-1/4 rounded-lg">
+                    <div className="h-3 w-1/4 rounded-lg bg-default-200"></div>
+                  </Skeleton>
+                  <Skeleton className="w-1/4 rounded-lg">
+                    <div className="h-3 w-1/4 rounded-lg bg-default-200"></div>
+                  </Skeleton>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex items-center overflox-x-scroll md:overflow-x-hidden font-bold mt-[48px] justify-between mb-4">

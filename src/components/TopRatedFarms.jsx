@@ -1,6 +1,23 @@
-export default function TopRatedFarms({data}){
-  let farms = data.filter(farm => farm.rating >= 3.5).slice(0, 3)
-  console.log(farms)
+import { Skeleton } from "@heroui/react"
+
+export default function TopRatedFarms({data, isLoading}){
+  let farms = data?.filter(farm => farm.rating >= 3.5).slice(0, 3) || []
+
+  if (isLoading) {
+    return (
+      <div className="w-full mt-[48px]">
+        <div className="flex items-center font-bold justify-between mb-4">
+          <div>Top Rated</div>
+        </div>
+        <div className="bg-[#FAFAFA] p-4 md:p-[24px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, index) => (
+            <Card key={index} isLoading={true} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full mt-[48px]">
       <div className="flex items-center font-bold justify-between mb-4">
@@ -21,7 +38,28 @@ export default function TopRatedFarms({data}){
   )
 }
 
-export function Card ({ img, name, color="blue", rating }){
+export function Card ({ img, name, color="blue", rating, isLoading }){
+  if (isLoading) {
+    return (
+      <div className="flex p-4 md:p-[24px] w-full gap-4 md:gap-6 lg:gap-10 rounded-[10px] items-center bg-default-100">
+        <Skeleton className="rounded-md">
+          <div className="w-16 md:w-20 lg:w-[96px] h-16 md:h-20 lg:h-[96px] bg-default-300"></div>
+        </Skeleton>
+        <div className="flex-1 space-y-2">
+          <Skeleton className="w-3/4 rounded-lg">
+            <div className="h-4 w-3/4 bg-default-200"></div>
+          </Skeleton>
+          <Skeleton className="w-1/2 rounded-lg">
+            <div className="h-3 w-1/2 bg-default-200"></div>
+          </Skeleton>
+          <Skeleton className="w-1/4 rounded-lg">
+            <div className="h-3 w-1/4 bg-default-200"></div>
+          </Skeleton>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ backgroundColor: color }} className="flex p-4 md:p-[24px] w-full gap-4 md:gap-6 lg:gap-10 rounded-[10px] items-center">
       <img className="w-16 md:w-20 lg:w-[96px] h-16 md:h-20 lg:h-[96px] object-cover rounded-md" src={img} alt={name} />

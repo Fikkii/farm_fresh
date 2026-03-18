@@ -1,4 +1,4 @@
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { Button, Input, Select, SelectItem, Skeleton } from "@heroui/react";
 import {Card, CardBody, CardFooter, Image} from "@heroui/react";
 import { useEffect, useState } from "react";
 import { fetchAllFarms } from "../controllers/productController";
@@ -15,11 +15,16 @@ export const currentLocation = [
 
 export default function FarmsPage(){
   const [farms, setFarms] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchAllFarms().then(data => {
       setFarms(data)
-    }).catch(error => console.error(error))
+      setIsLoading(false)
+    }).catch(error => {
+      console.error(error)
+      setIsLoading(false)
+    })
     return () => {
       setFarms([])
     }
@@ -60,15 +65,52 @@ export default function FarmsPage(){
       </div>
       
       <div>
-        <FarmsList farms={farms} />
+        <FarmsList farms={farms} isLoading={isLoading} />
       </div>
     </div>
   )
 }
 
-export function FarmsList({farms}){
+export function FarmsList({farms, isLoading}){
 
-  const navigate = useNavigate()
+  if (isLoading) {
+    return (
+      <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-[24px] md:mt-[48px]">
+        {[...Array(8)].map((_, index) => (
+          <Card key={index} shadow="sm" className="w-full">
+            <CardBody className="overflow-visible p-0">
+              <Skeleton className="rounded-lg">
+                <div className="h-[192px] rounded-lg bg-default-300"></div>
+              </Skeleton>
+            </CardBody>
+            <CardFooter className="text-small flex-col items-start gap-2">
+              <div className="flex w-full justify-between">
+                <Skeleton className="w-3/5 rounded-lg">
+                  <div className="h-3 w-3/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+                <Skeleton className="w-1/5 rounded-lg">
+                  <div className="h-3 w-1/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+              </div>
+              <div className="flex justify-between w-full gap-4">
+                <Skeleton className="w-4/5 rounded-lg">
+                  <div className="h-3 w-4/5 rounded-lg bg-default-200"></div>
+                </Skeleton>
+              </div>
+              <div className="flex gap-[9px] mt-[9px] w-full">
+                <Skeleton className="w-1/4 rounded-lg">
+                  <div className="h-6 w-1/4 rounded-lg bg-default-200"></div>
+                </Skeleton>
+                <Skeleton className="w-1/4 rounded-lg">
+                  <div className="h-6 w-1/4 rounded-lg bg-default-200"></div>
+                </Skeleton>
+              </div >
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="gap-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-[24px] md:mt-[48px]">
@@ -104,8 +146,8 @@ export function FarmsList({farms}){
             </p>
         </div>
             <div className="flex gap-[9px] mt-[9px] overflow-x-auto items-center text-gray-500">
-              {farm.productTags.map((tag) => (
-                <div className="p-[4.5px] bg-[#E4F3E4] rounded-[9px]">{tag}</div>
+              {farm.productTags?.map((tag) => (
+                <div key={tag} className="p-[4.5px] bg-[#E4F3E4] rounded-[9px]">{tag}</div>
               ))}
             </div >
         </CardFooter>

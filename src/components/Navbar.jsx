@@ -1,13 +1,10 @@
 import { Input } from "@heroui/react";
 import { NavLink } from "react-router-dom";
-import { useUser } from "../contexts/userContext";
 
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@heroui/react";
 import { useState } from "react";
 
 export default function AppNavbar() {
-  const { user, login } = useUser();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
