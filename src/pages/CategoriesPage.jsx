@@ -1,11 +1,22 @@
 import { Button } from "@heroui/react";
 import ProductSlide from "../components/ProductSlide";
+import { fetchCategories } from "../controllers/productController";
+import { useEffect, useState } from "react";
 
 const categories  = [
   "All", "Vegetables", "Meat", "Fruits", "Diary", "Poultry", "Eggs", "Grains"
 ]
 
 export default function CategoriesPage(){
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    fetchCategories().then(categories => {
+      console.log(categories)
+      setCategories(categories)
+    }).catch(error => {
+      console.error("Error fetching categories", error)})
+  }, [])
   return (
     <div>
       <h2 className="text-[32px] font-bold">Shop by Categories</h2>

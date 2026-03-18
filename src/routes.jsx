@@ -13,7 +13,7 @@ import FarmsPage from "./pages/FarmsPage";
 import FarmsDetail from "./pages/FarmsDetail";
 
 import ProductDetail from "./pages/ProductDetail";
-import { fetchFarm, fetchFarmProducts } from "./controllers/productController";
+import { fetchFarm, fetchFarmProducts, fetchProduct } from "./controllers/productController";
 
 export const routes= createBrowserRouter([
   {
@@ -57,8 +57,13 @@ export const routes= createBrowserRouter([
         ]
       },
       {
-        path: "products",
-        Component: ProductDetail
+        path: "product/:productId",
+        Component: ProductDetail,
+        loader: async ({ params }) => {
+          const { productId } = params;
+          const product = await fetchProduct(productId);
+          return { product };
+        }
       },
       {
         path: "orders",

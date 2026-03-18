@@ -5,8 +5,29 @@ import TopRatedFarms from './components/TopRatedFarms'
 import WhyShop from './components/WhyShop'
 import HowItWorks from './components/HowItWorks'
 import { Button } from '@heroui/react'
+import { useEffect, useState } from 'react'
+import { fetchAllFarms, fetchAllProducts } from './controllers/productController'
+import FarmCardGroup from './components/cards/FarmCardGroup'
 
 function App() {
+  const [farms, setFarms] = useState([]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchAllFarms().then(data => {
+      setFarms(data.slice(0, 4))
+    }).catch(error => console.error(error))
+
+  fetchAllProducts().then(data => {
+    setProducts(data.slice(0, 8))
+  }).catch(error => console.error(error))
+
+    return () => {
+      setFarms([]);
+      setProducts([]);
+    }
+  }, [])
+
   return (
     <div>
 <div className='bg-[url("/hero.jpg")] bg-cover bg-center h-[400px] md:h-[480px] rounded-lg flex flex-col items-center md:items-start justify-center text-white px-6 md:px-0'>
@@ -33,10 +54,10 @@ function App() {
     </div>
   </div>
 </div>
-        <ProductSlide title='Nearby Farms' type="rated" />
+        <FarmCardGroup title='Nearby Farms' data={farms} />
         <CategoriesSlide />
-        <ProductSlide title="Todays's Fresh Pick" />
-        <TopRatedFarms />
+        <ProductSlide title="Todays's Fresh Pick" data={products} type="buy_add"  />
+        <TopRatedFarms data={farms} />
         <WhyShop />
         <HowItWorks />
     </div>

@@ -1,24 +1,18 @@
-import { Button } from "@heroui/react"
+import { Button, ButtonGroup } from "@heroui/react"
+import { fetchCategories } from "../controllers/productController"
+import { useEffect, useState } from "react"
 
 export default function CategoriesSlide(){
-  const categories = [
-    {
-      name: "Vegetables",
-      image: "/categories/Fruits-1.png"
-    },
-    {
-      name: "Fruits",
-      image: "/categories/Fruits-1.png"
-    },
-    {
-      name: "Grains",
-      image: "/categories/Fruits-1.png"
-    },
-    {
-      name: "Diaries",
-      image: "/categories/Fruits-1.png"
-    },
-  ]
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    fetchCategories().then(categories => {
+      console.log(categories[0].products)
+      setCategories(categories)
+    }).catch(error => {
+      console.error("Error fetching categories", error)})
+  }, [])
+
   return (
     <div>
       <div className="flex gap-2 items-center font-bold text-[26px] mt-[48px]">
@@ -27,10 +21,10 @@ export default function CategoriesSlide(){
           <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
         </svg>
       </div>
-      <div className="flex overflow-x-scroll gap-[12px] mt-2 overflow-x-scroll md:overflow-x-hidden">
+      <div className="flex overflow-x-scroll gap-[24px] overflow-x-scroll md:overflow-x-hidden">
       {
         categories.map((cat, index) => (
-          <Button color="success" className="text-white" key={index}>{cat.name}</Button>
+          <Button className="p-2 border block w-[100%] w-max-[200px]" key={index}>{cat.name}</Button>
         ))
       }
       </div>

@@ -1,41 +1,15 @@
 import {Card, CardBody, CardFooter, Image} from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 
-export default function CardComponent({products}) {
-  let list = products
-  if (!products){
-    list = [
-      {
-        title: "Green Valley Farm",
-        img: "/products/Green Valley Farm.png",
-        price: "$4800",
-        measurement: "kg",
-      },
-      {
-        title: "Tangerine",
-        img: "/products/Organic Orchards-1.png",
-        price: "$3520",
-        measurement: "kg",
-      },
-      {
-        title: "Raspberry",
-        img: "/products/Organic Orchards.png",
-        price: "$3520.2",
-        measurement: "kg",
-      },
-      {
-        title: "Lemon",
-        img: "/products/Sunrise Poultry.png",
-        price: "$350",
-        measurement: "kg",
-      },
-    ];
-}
+export default function CardComponent({data}) {
+  let list = data
+  const navigate = useNavigate();
 
   return (
     <div className="gap-[24px] flex flex-col md:grid grid-cols-2 sm:grid-cols-4">
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         /* eslint-disable no-console */
-        <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => console.log("item pressed")}>
+        <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => navigate(`/product/${item.$id}`)}>
           <CardBody className="overflow-visible p-2">
             <Image
               alt={item.productName}

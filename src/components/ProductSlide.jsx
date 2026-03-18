@@ -1,21 +1,21 @@
 import RatedCard from "../components/cards/RatedCard";
 import PricedCard from "../components/cards/PricedCard";
 
-export default function ProductSlide({ title = "Featured Products", products = null, type }) {
+export default function ProductSlide({ title = "Featured Products", data = null, type }) {
   let card;
 
   switch (type) {
     case "rated":
-      card = <RatedCard products={products} />;
+      card = <RatedCard data={data} />;
       break;
     case "priced":
-      card = <PricedCard products={products} />;
+      card = <PricedCard data={data} />;
       break;
     case "buy_add":
-      card = <CartCard products={products} />;
+      card = <CartCard data={data} />;
       break;
     default:
-      card = <PricedCard products={products} />;
+      card = <PricedCard data={data} />;
   }
 
   return (
@@ -40,43 +40,15 @@ export default function ProductSlide({ title = "Featured Products", products = n
 }
 
 import {Button, Card, CardBody, CardFooter, Image} from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 
-export function CartCard({products}) {
-  let list = products
-  if (!products){
-    list = [
-      {
-        title: "Green Valley Farm",
-        img: "/products/Green Valley Farm.png",
-        price: "$4800",
-        measurement: "kg",
-      },
-      {
-        title: "Tangerine",
-        img: "/products/Organic Orchards-1.png",
-        price: "$3520",
-        measurement: "kg",
-      },
-      {
-        title: "Raspberry",
-        img: "/products/Organic Orchards.png",
-        price: "$3520.2",
-        measurement: "kg",
-      },
-      {
-        title: "Lemon",
-        img: "/products/Sunrise Poultry.png",
-        price: "$350",
-        measurement: "kg",
-      },
-    ];
-}
-
+export function CartCard({data}) {
+  const navigate = useNavigate();
   return (
     <div className="gap-[24px] flex flex-col flex-wrap md:grid grid-cols-2 sm:grid-cols-4">
-      {list.map((item, index) => (
+      {data.map((item, index) => (
         /* eslint-disable no-console */
-        <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => console.log("item pressed")}>
+        <Card key={index} className={index % 2 == 0 ? "bg-[#EAF7EE]" : "bg-[#FBF4E7]"} isPressable shadow="sm" onPress={() => navigate(`/product/${item.$id}`)}>
           <CardBody className="overflow-visible p-2">
             <Image
               alt={item.productName}
@@ -98,10 +70,7 @@ export function CartCard({products}) {
               </div>
             </div>
             <div className="w-full mt-[4px]">
-              <Button className="w-full text-white" color="success"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-</svg>
-Add to Cart</Button>
+              <Button className="w-full text-white" color="success">Add to Cart</Button>
             </div>
         </CardFooter>
         </Card>
