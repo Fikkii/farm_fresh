@@ -13,6 +13,8 @@ import FarmsPage from "./pages/FarmsPage";
 import FarmsDetail from "./pages/FarmsDetail";
 
 import ProductDetail from "./pages/ProductDetail";
+import ProfilePage from "./pages/ProfilePage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
 import { fetchFarm, fetchFarmProducts, fetchProduct } from "./controllers/productController";
 
 export const routes= createBrowserRouter([
@@ -27,6 +29,14 @@ export const routes= createBrowserRouter([
       {
         path: "categories",
         Component: CategoriesPage
+      },
+      {
+        path: "profile",
+        Component: ProfilePage
+      },
+      {
+        path: "order-history",
+        Component: OrderHistoryPage
       },
       {
         path: "farms",

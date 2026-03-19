@@ -1,5 +1,5 @@
-import { Input, Badge, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Divider, Image } from "@heroui/react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Input, Badge, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Divider, Image, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../contexts/cartContext";
 import { useUser } from "../contexts/userContext";
 import { useState } from "react";
@@ -15,7 +15,7 @@ export default function AppNavbar() {
     { name: "Home", path: "/" },
     { name: "Categories", path: "/categories" },
     { name: "Farms", path: "/farms" },
-    { name: "Orders", path: "/orders" },
+    { name: "Cart", path: "/orders" },
   ];
 
   const handleCheckout = (onClose) => {
@@ -29,6 +29,8 @@ export default function AppNavbar() {
     setIsMenuOpen(false);
   };
 
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : user?.email?.charAt(0).toUpperCase() || "?";
+
   return (
     <nav className="w-full h-16 bg-[#4CAF50] relative text-white flex items-center justify-between px-4 z-50">
       <div className="flex items-center gap-2 text-lg font-bold">
@@ -38,7 +40,9 @@ export default function AppNavbar() {
           </svg>
         </button>
 
-        <img src="/logo.png" alt="Logo" className="h-12 md:h-14 inline-block mr-2 object-contain" />
+        <Link to="/">
+          <img src="/logo.png" alt="Logo" className="h-12 md:h-14 inline-block mr-2 object-contain" />
+        </Link>
       </div>
       <div className="flex-1 max-w-md mx-4 hidden md:block">
       <Input
@@ -87,7 +91,11 @@ export default function AppNavbar() {
         }
         <div className="mt-auto border-t border-white/20 pt-4 flex flex-col gap-4">
           {user ? (
-            <button onClick={handleLogout} className="py-2 text-left">Logout</button>
+            <>
+              <NavLink to="/profile" className="py-2" onClick={() => setIsMenuOpen(false)}>Profile</NavLink>
+              <NavLink to="/order-history" className="py-2" onClick={() => setIsMenuOpen(false)}>Order History</NavLink>
+              <button onClick={handleLogout} className="py-2 text-left">Logout</button>
+            </>
           ) : (
             <>
               <NavLink to="/auth/login" className="py-2" onClick={() => setIsMenuOpen(false)}>Login</NavLink>
@@ -103,9 +111,7 @@ export default function AppNavbar() {
             <NavLink key={index} to={item.path} className={({isActive}) => `hover:text-yellow-100 transition-colors ${isActive ? 'active' : ''}`}>{item.name}</NavLink>
           ))
         }
-        {user ? (
-          <button onClick={handleLogout} className="hover:text-yellow-100">Logout</button>
-        ) : (
+        {!user && (
           <NavLink to="/auth/login" className="hover:text-yellow-100">Login</NavLink>
         )}
       </div>
@@ -122,9 +128,44 @@ export default function AppNavbar() {
             </svg> 
           </Button>
         </Badge>
-        <NavLink to="/orders" className="hover:text-gray-200 p-1"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /> </svg> </NavLink>
-        {!user && (
+        
+        {user ? (
+          <>
+            <Link to="/order-history" className="hover:text-gray-200 p-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /> 
+              </svg> 
+            </Link>
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Avatar
+                  isBordered
+                  as="button"
+                  className="transition-transform"
+                  color="success"
+                  name={userInitial}
+                  size="sm"
+                  getInitials={(name) => name}
+                />
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Profile Actions" variant="flat">
+                <DropdownItem key="profile" className="h-14 gap-2">
+                  <p className="font-semibold">Signed in as</p>
+                  <p className="font-semibold">{user.email}</p>
+                </DropdownItem>
+                <DropdownItem key="my-profile" onPress={() => navigate("/profile")}>
+                  My Profile
+                </DropdownItem>
+                <DropdownItem key="orders" onPress={() => navigate("/order-history")}>
+                  My Orders
+                </DropdownItem>
+                <DropdownItem key="logout" color="danger" onPress={handleLogout}>
+                  Log Out
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </>
+        ) : (
           <NavLink to="/auth/signup" className="hidden sm:block px-4 py-1 bg-white text-[#4CAF50] rounded-lg font-bold hover:bg-gray-100 transition-colors">Sign up</NavLink>
         )}
       </div>

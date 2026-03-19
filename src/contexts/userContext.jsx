@@ -65,6 +65,11 @@ export const UserProvider = ({ children }) => {
     await account.createVerification('http://localhost:5173/auth/verify');
   }
 
+  async function updateProfile(name) {
+    await account.updateName(name);
+    setUser(await account.get());
+  }
+
   const contextValue = {
     user,
     logout,
@@ -72,7 +77,8 @@ export const UserProvider = ({ children }) => {
     login,
     verifyEmail,
     sendVerificationEmail,
-    loginWithGoogle
+    loginWithGoogle,
+    updateProfile
   };
 
   return (
