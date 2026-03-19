@@ -3,9 +3,10 @@ import { useCart } from "../contexts/cartContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../contexts/userContext";
 import { usePaystackPayment } from "react-paystack";
-import { databases, ID } from "../lib/appwrite";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { saveOrder } from "../controllers/orderController";
+import React from "react";
 
 export default function OrdersPage() {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
@@ -14,9 +15,12 @@ export default function OrdersPage() {
   const location = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // 1. Stable reference state to prevent re-render disconnects
+  const [paymentRef, setPaymentRef] = useState(() => (new Date()).getTime().toString());
+
   // Paystack Configuration
   const config = {
-    reference: (new Date()).getTime().toString(),
+    reference: paymentRef, // 2. Using the stable reference
     email: user?.email || "",
     amount: Math.round(totalPrice * 100), // Paystack expects amount in kobo/cents
     publicKey: 'pk_test_71133a49d4fa2f3e24d489e6ac3d4d8b8ec46951',
@@ -25,41 +29,30 @@ export default function OrdersPage() {
   const onSuccess = async (reference) => {
     setIsProcessing(true);
     try {
-      // Save order to Appwrite
-      await databases.createDocument(
-        '69b5a810001139b4e286', // Database ID
-        'orders',               // Collection ID (Assuming 'orders' exists)
-        ID.unique(),
-        {
-          userId: user.$id,
-          userName: user.name,
-          userEmail: user.email,
-          totalAmount: totalPrice,
-          status: "paid",
-          paymentReference: reference.reference,
-          items: JSON.stringify(cart.map(item => ({
-            productId: item.$id,
-            productName: item.productName,
-            price: item.price,
-            quantity: item.quantity || 1
-          }))),
-          createdAt: new Date().toISOString()
-        }
-      );
-
+      await saveOrder(user, totalPrice, reference.reference, cart, "paid");
       toast.success("Payment Successful! Order placed.");
       clearCart();
-      // Optionally navigate to a success page or back to orders
+      navigate("/order-history");
     } catch (error) {
       console.error("Error saving order:", error);
       toast.error("Payment successful but failed to save order details. Please contact support.");
     } finally {
       setIsProcessing(false);
+      // 3. Reset the reference so a new one is ready for future transactions
+      setPaymentRef((new Date()).getTime().toString());
     }
   };
 
-  const onClose = () => {
+  const onClose = async () => {
     toast.error("Payment cancelled.");
+    try {
+      await saveOrder(user, totalPrice, config.reference, cart, "failed");
+    } catch (error) {
+      console.error("Error saving failed order:", error);
+    }
+    setIsProcessing(false);
+    // 3. Reset the reference here as well
+    setPaymentRef((new Date()).getTime().toString());
   };
 
   const initializePayment = usePaystackPayment(config);
@@ -71,7 +64,9 @@ export default function OrdersPage() {
       return;
     }
 
-    initializePayment(onSuccess, onClose);
+    setIsProcessing(true);
+    // 4. Passing callbacks as a configuration object
+    initializePayment({ onSuccess, onClose });
   };
 
   if (cart.length === 0) {

@@ -1,27 +1,83 @@
 import { Button, Card, CardBody, Image, Input } from "@heroui/react";
 import ProductSlide from "../components/ProductSlide";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../contexts/cartContext";
+import { useUser } from "../contexts/userContext";
+import { usePaystackPayment } from "react-paystack";
 import { useState } from "react";
+import { saveOrder } from "../controllers/orderController";
 import toast from "react-hot-toast";
+import React from "react";
 
 export default function ProductDetail(){
   const { product }= useLoaderData();
-  const { addToCart, updateQuantity, cart } = useCart();
+  const { addToCart, clearCart } = useCart();
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
   
-  // Find item in cart to get current quantity
-  const cartItem = cart.find(item => item.$id === product.$id);
-  const [localQuantity, setLocalQuantity] = useState(cartItem?.quantity || 1);
+  const [localQuantity, setLocalQuantity] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  // 1. Stable reference state to prevent re-render disconnects
+  const [paymentRef, setPaymentRef] = useState(() => (new Date()).getTime().toString());
+
+  const totalPrice = parseFloat(product.price) * localQuantity;
+
+  // Paystack Configuration
+  const config = {
+    reference: paymentRef, // 2. Using the stable reference
+    email: user?.email || "",
+    amount: Math.round(totalPrice * 100),
+    publicKey: 'pk_test_71133a49d4fa2f3e24d489e6ac3d4d8b8ec46951',
+  };
+
+  const onSuccess = async (reference) => {
+    setIsProcessing(true);
+    try {
+      await saveOrder(user, totalPrice, reference.reference, [{...product, quantity: localQuantity}], "paid");
+      toast.success("Payment Successful! Order placed.");
+      clearCart();
+      navigate("/order-history");
+    } catch (error) {
+      console.error("Error saving order:", error);
+      toast.error("Payment successful but failed to save order details.");
+    } finally {
+      setIsProcessing(false);
+      // 3. Reset the reference so a new one is ready for future transactions
+      setPaymentRef((new Date()).getTime().toString()); 
+    }
+  };
+
+  const onClose = async () => {
+    toast.error("Payment cancelled.");
+    try {
+      await saveOrder(user, totalPrice, config.reference, [{...product, quantity: localQuantity}], "failed");
+    } catch (error) {
+      console.error("Error saving failed order:", error);
+    }
+    setIsProcessing(false);
+    // 3. Reset the reference here as well
+    setPaymentRef((new Date()).getTime().toString()); 
+  };
+
+  const initializePayment = usePaystackPayment(config);
 
   const handleAdd = () => {
-    // If it's already in cart, we just update quantity in context
-    if (cartItem) {
-      updateQuantity(product.$id, cartItem.quantity + localQuantity);
-    } else {
-      // Create a copy of product with the selected quantity
-      addToCart({...product, quantity: localQuantity});
-    }
+    addToCart(product, localQuantity);
     toast.success(`${product.productName} added to cart!`);
+    setLocalQuantity(1);
+  };
+
+  const handleBuyNow = () => {
+    if (!user) {
+      toast.error("Please login to proceed with checkout");
+      navigate("/auth/login", { state: { from: location.pathname } });
+      return;
+    }
+    setIsProcessing(true);
+    // 4. Passing callbacks as a configuration object
+    initializePayment({ onSuccess, onClose });
   };
 
   return (
@@ -85,9 +141,9 @@ export default function ProductDetail(){
                   <Button 
                     className="text-white min-w-[40px]" 
                     color="success"
-                    onPress={() => setLocalQuantity(prev => prev + 1)}
+                    onPress={() => setLocalQuantity(prev => Math.max(1, prev - 1))}
                   >
-                    +
+                    -
                   </Button>
                   <Input 
                     readOnly
@@ -97,9 +153,9 @@ export default function ProductDetail(){
                   <Button 
                     className="text-white min-w-[40px]" 
                     color="success"
-                    onPress={() => setLocalQuantity(prev => Math.max(1, prev - 1))}
+                    onPress={() => setLocalQuantity(prev => prev + 1)}
                   >
-                    -
+                    +
                   </Button>
                 </div>
                 <Button 
@@ -111,7 +167,15 @@ export default function ProductDetail(){
                 </Button>
               </div>
               <div>
-                <Button className="px-[16px] bg-white hover:bg-green-500 hover:text-white border py-[16px] font-bold w-full" color="success" variant="flat">Buy Now</Button>
+                <Button 
+                  className="px-[16px] bg-white hover:bg-green-500 hover:text-white border py-[16px] font-bold w-full" 
+                  color="success" 
+                  variant="flat"
+                  onPress={handleBuyNow}
+                  isLoading={isProcessing}
+                >
+                  Buy Now
+                </Button>
               </div>
               <div className="flex gap-2 border-t border-gray-300 pt-4">
                 <div className="text-[14px] text-[#757575] flex items-center gap-1">

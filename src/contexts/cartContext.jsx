@@ -20,15 +20,15 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('farm_fresh_cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product) => {
+  const addToCart = (product, quantity = 1) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.$id === product.$id);
       if (existingItem) {
         return prevCart.map((item) =>
-          item.$id === product.$id ? { ...item, quantity: (item.quantity || 1) + 1 } : item
+          item.$id === product.$id ? { ...item, quantity: (item.quantity || 1) + quantity } : item
         );
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+      return [...prevCart, { ...product, quantity }];
     });
   };
 

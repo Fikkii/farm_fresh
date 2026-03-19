@@ -1,9 +1,18 @@
-import {Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
+import {Card, CardBody, CardFooter, Image, Skeleton, Button} from "@heroui/react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../contexts/cartContext";
+import toast from "react-hot-toast";
 
 export default function CardComponent({data, isLoading}) {
+  const { addToCart } = useCart();
   let list = data
   const navigate = useNavigate();
+
+  const handleAddToCart = (e, item) => {
+    e.stopPropagation(); // Prevent the card's onPress from triggering
+    addToCart(item, 1);
+    toast.success(`${item.productName} added to cart!`);
+  };
 
   if (isLoading) {
     return (
@@ -57,9 +66,15 @@ export default function CardComponent({data, isLoading}) {
               <div>
                 <span className="font-bold">{item.price}</span>/kg
               </div>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="#66BB6A" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-7">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
+              <Button 
+                isIconOnly 
+                className="bg-transparent h-fit w-fit min-w-0 p-0" 
+                onClick={(e) => handleAddToCart(e, item)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#66BB6A" viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" className="size-7">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </Button>
             </div>
         </CardFooter>
         </Card>

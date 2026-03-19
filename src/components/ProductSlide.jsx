@@ -108,7 +108,7 @@ export function CartCard({data, isLoading}) {
               <Button 
                 className="w-full text-white" 
                 color="success"
-                onPress={(e) => {
+                onClick={(e) => {
                   e.stopPropagation();
                   addToCart(item);
                   toast.success(`${item.productName} added to cart!`);

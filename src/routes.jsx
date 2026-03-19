@@ -15,6 +15,7 @@ import FarmsDetail from "./pages/FarmsDetail";
 import ProductDetail from "./pages/ProductDetail";
 import ProfilePage from "./pages/ProfilePage";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
+import ProfileLayout from "./pages/layouts/ProfileLayout";
 import { fetchFarm, fetchFarmProducts, fetchProduct } from "./controllers/productController";
 
 export const routes= createBrowserRouter([
@@ -31,12 +32,17 @@ export const routes= createBrowserRouter([
         Component: CategoriesPage
       },
       {
-        path: "profile",
-        Component: ProfilePage
-      },
-      {
-        path: "order-history",
-        Component: OrderHistoryPage
+        Component: ProfileLayout,
+        children: [
+          {
+            path: "profile",
+            Component: ProfilePage
+          },
+          {
+            path: "order-history",
+            Component: OrderHistoryPage
+          },
+        ]
       },
       {
         path: "farms",
