@@ -129,7 +129,7 @@ export default function FarmDetail(){
           </Card>
         </div>
       </div>
-      <ProductSlide title="Available Products" products={products} />
+      <ProductSlide title="Available Products" type="buy_add" products={products} />
     </div>
   )
 }
