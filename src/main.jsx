@@ -1,19 +1,22 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
 import { routes } from './routes.jsx'
 import { RouterProvider } from 'react-router-dom'
 import {HeroUIProvider} from '@heroui/react'
 import { UserProvider } from './contexts/userContext.jsx'
+import { CartProvider } from './contexts/cartContext.jsx'
+import { Toaster } from 'react-hot-toast'
 
 createRoot(document.getElementById('root')).render(
-  <div>
+  <StrictMode>
     <UserProvider>
-      <RouterProvider router={routes} >
+      <CartProvider>
         <HeroUIProvider>
+          <Toaster position="top-center" reverseOrder={false} />
+          <RouterProvider router={routes} />
         </HeroUIProvider>
-      </RouterProvider>
+      </CartProvider>
     </UserProvider>
-  </div>,
+  </StrictMode>,
 )

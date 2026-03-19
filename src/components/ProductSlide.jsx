@@ -2,6 +2,8 @@ import RatedCard from "../components/cards/RatedCard";
 import PricedCard from "../components/cards/PricedCard";
 import {Button, Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/cartContext";
+import toast from "react-hot-toast";
 
 export default function ProductSlide({ title = "Featured Products", products = null, type, isLoading = false }) {
   let card;
@@ -29,7 +31,7 @@ export default function ProductSlide({ title = "Featured Products", products = n
         </div>
         <div className="flex gap-2 items-center">
           <span>See More</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
         </div>
@@ -43,6 +45,7 @@ export default function ProductSlide({ title = "Featured Products", products = n
 
 export function CartCard({data, isLoading}) {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   if (isLoading) {
     return (
@@ -102,7 +105,17 @@ export function CartCard({data, isLoading}) {
               </div>
             </div>
             <div className="w-full mt-[4px]">
-              <Button className="w-full text-white" color="success">Add to Cart</Button>
+              <Button 
+                className="w-full text-white" 
+                color="success"
+                onPress={(e) => {
+                  e.stopPropagation();
+                  addToCart(item);
+                  toast.success(`${item.productName} added to cart!`);
+                }}
+              >
+                Add to Cart
+              </Button>
             </div>
         </CardFooter>
         </Card>
@@ -110,4 +123,3 @@ export function CartCard({data, isLoading}) {
     </div>
   );
 }
-
