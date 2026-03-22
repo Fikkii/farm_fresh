@@ -6,22 +6,24 @@ export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Check if user is already logged in on component mount
-    account.get().then(userAccount => {
-      if (userAccount.emailVerification) {
+    const checkSession = async () => {
+      try {
+        const userAccount = await account.get();
+        // Set user state if session exists, regardless of verification
         setUser(userAccount);
-      } else {
-        // Session exists but not verified. We keep the session for resending 
-        // emails but don't set the user state so they stay "logged out".
+      } catch (error) {
+        console.log("No active session", error);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
-      console.log("Auth Check:", userAccount.emailVerification ? "Verified" : "Unverified");
-    }).catch(error => {
-      console.log("No active session", error);
-      setUser(null);
-    });
+    };
+
+    checkSession();
   }, []);
 
   async function logout() {
@@ -60,8 +62,16 @@ export const UserProvider = ({ children }) => {
     setUser(userAccount);
   }
 
+  const getBaseUrl = () => {
+    let url = import.meta.env.VITE_APP_URL || window.location.origin;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = `https://${url}`;
+    }
+    return url.replace(/\/$/, "");
+  };
+
   async function loginWithGoogle() {
-    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const baseUrl = getBaseUrl();
     await account.createOAuth2Session(
       'google',
       `${baseUrl}/`,
@@ -82,7 +92,7 @@ export const UserProvider = ({ children }) => {
   }
 
   async function sendVerificationEmail() {
-    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const baseUrl = getBaseUrl();
     await account.createVerification(`${baseUrl}/auth/verify/success`);
   }
 
@@ -93,6 +103,7 @@ export const UserProvider = ({ children }) => {
 
   const contextValue = {
     user,
+    loading,
     logout,
     signup,
     login,
@@ -104,7 +115,7 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider value={contextValue}>
-      {children}
+      {!loading && children}
     </UserContext.Provider>
   );
 };
