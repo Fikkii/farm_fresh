@@ -63,10 +63,20 @@ export const UserProvider = ({ children }) => {
   }
 
   const getBaseUrl = () => {
-    let url = import.meta.env.VITE_APP_URL || window.location.origin;
+    // Vite defines environment variables as strings, so we check for truthiness
+    let url = import.meta.env.VITE_APP_URL;
+    
+    // Fallback to window.location.origin if VITE_APP_URL is not provided
+    if (!url || url === 'undefined' || url === 'null') {
+      return window.location.origin.replace(/\/$/, "");
+    }
+
+    // Ensure it starts with a protocol
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = `https://${url}`;
     }
+    
+    // Always strip trailing slash for consistency
     return url.replace(/\/$/, "");
   };
 
