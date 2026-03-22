@@ -65,7 +65,7 @@ export const UserProvider = ({ children }) => {
 
   const getBaseUrl = () => {
     // Vite defines environment variables as strings, so we check for truthiness
-    let url = import.meta.env.VITE_APP_URL;
+    let url = import.meta.env.VITE_APP_URLA;
     
     // Fallback to window.location.origin if VITE_APP_URL is not provided
     if (!url || url === 'undefined' || url === 'null') {
