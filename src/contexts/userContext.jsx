@@ -61,10 +61,11 @@ export const UserProvider = ({ children }) => {
   }
 
   async function loginWithGoogle() {
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
     await account.createOAuth2Session(
       'google',
-      `${window.location.origin}/`,
-      `${window.location.origin}/auth/login`
+      `${baseUrl}/`,
+      `${baseUrl}/auth/login`
     )
   }
 
@@ -81,7 +82,8 @@ export const UserProvider = ({ children }) => {
   }
 
   async function sendVerificationEmail() {
-    await account.createVerification(`${window.location.origin}/auth/verify/success`);
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    await account.createVerification(`${baseUrl}/auth/verify/success`);
   }
 
   async function updateProfile(name) {

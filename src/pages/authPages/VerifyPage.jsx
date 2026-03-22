@@ -1,19 +1,32 @@
 import { Button } from "@heroui/react"
 import { Link, useNavigate } from "react-router-dom"
 import { useUser } from "../../contexts/userContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function VerifyPage() {
   const { sendVerificationEmail, logout } = useUser();
   const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
+
   const handleResend = async () => {
+    if (countdown > 0) return;
     setIsResending(true);
     try {
       await sendVerificationEmail();
       toast.success("Verification email resent!");
+      setCountdown(60); // Set 60 seconds countdown
     } catch (error) {
       toast.error(error.message || "Failed to resend email");
     } finally {
@@ -39,8 +52,9 @@ export default function VerifyPage() {
           className="text-white font-bold"
           onPress={handleResend}
           isLoading={isResending}
+          isDisabled={countdown > 0}
         >
-          Resend Verification Email
+          {countdown > 0 ? `Resend in ${countdown}s` : "Resend Verification Email"}
         </Button>
 
         <Button 
