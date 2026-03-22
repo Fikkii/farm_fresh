@@ -1,10 +1,12 @@
 import { Button, ButtonGroup, Skeleton } from "@heroui/react"
 import { fetchCategories } from "../controllers/productController"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function CategoriesSlide(){
   const [categories, setCategories] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories().then(categories => {
@@ -15,6 +17,10 @@ export default function CategoriesSlide(){
       setIsLoading(false)
     })
   }, [])
+
+  const handleCategoryClick = (categoryName) => {
+    navigate("/categories", { state: { selectedCategory: categoryName } });
+  };
 
   return (
     <div>
@@ -35,7 +41,13 @@ export default function CategoriesSlide(){
         ))
       ) : (
         categories.map((cat, index) => (
-          <CategoryCard key={index} title={cat.name} image={cat.image} borderColor={index % 2 === 0 ? "#4CAF50" : "#EAB308"} />
+          <CategoryCard 
+            key={index} 
+            title={cat.name} 
+            image={cat.img || cat.image} 
+            borderColor={index % 2 === 0 ? "#4CAF50" : "#EAB308"} 
+            onClick={() => handleCategoryClick(cat.name)}
+          />
         ))
       )}
       </div>
@@ -43,9 +55,13 @@ export default function CategoriesSlide(){
   )
 }
 
-export function CategoryCard({title = "Meat", image = "/categories/Fruits.png", borderColor="#4CAF50"}){
+export function CategoryCard({title = "Meat", image = "/categories/Fruits.png", borderColor="#4CAF50", onClick}){
   return (
-    <div style={{ borderColor: borderColor }} className="border-2 relative flex-shrink-0 grid place-items-center rounded-[24px] bg-white w-[160px] h-[180px] md:w-[233px] md:h-[245px] transition-transform hover:scale-105">
+    <div 
+      style={{ borderColor: borderColor }} 
+      className="border-2 relative flex-shrink-0 grid place-items-center rounded-[24px] bg-white w-[160px] h-[180px] md:w-[233px] md:h-[245px] transition-transform hover:scale-105 cursor-pointer"
+      onClick={onClick}
+    >
       <img src={image} className="h-[60%] md:h-[70%] object-contain" alt={title} />
       <span style={{ backgroundColor: borderColor }} className="px-[12px] py-[3.5px] text-white absolute top-3 left-3 rounded-[6px] text-xs md:text-sm font-bold shadow-sm">{title}</span>
     </div>

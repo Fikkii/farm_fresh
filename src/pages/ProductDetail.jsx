@@ -64,6 +64,14 @@ export default function ProductDetail(){
   const initializePayment = usePaystackPayment(config);
 
   const handleAdd = () => {
+    if (product.stockQuantity <= 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
+    if (localQuantity > product.stockQuantity) {
+      toast.error(`Only ${product.stockQuantity} items left in stock`);
+      return;
+    }
     addToCart(product, localQuantity);
     toast.success(`${product.productName} added to cart!`);
     setLocalQuantity(1);
@@ -73,6 +81,14 @@ export default function ProductDetail(){
     if (!user) {
       toast.error("Please login to proceed with checkout");
       navigate("/auth/login", { state: { from: location.pathname } });
+      return;
+    }
+    if (product.stockQuantity <= 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
+    if (localQuantity > product.stockQuantity) {
+      toast.error(`Only ${product.stockQuantity} items left in stock`);
       return;
     }
     setIsProcessing(true);
@@ -92,9 +108,15 @@ export default function ProductDetail(){
 
         <Card>
           <CardBody className="flex flex-col gap-4 p-[24px]">
-            <Button className="rounded-full w-[fit-content] text-white font-bold bg-[#4CAF50]" size="sm" color="success">
-              In Stock
-            </Button>
+            {product.stockQuantity > 0 ? (
+              <Button className="rounded-full w-[fit-content] text-white font-bold bg-[#4CAF50]" size="sm" color="success">
+                In Stock ({product.stockQuantity})
+              </Button>
+            ) : (
+              <Button className="rounded-full w-[fit-content] text-white font-bold bg-red-500" size="sm" color="danger">
+                Out of Stock
+              </Button>
+            )}
             <div>
               <h2 className="text-[34px] font-bold">{product.productName}</h2>
               <div className="flex items-center font-bold gap-1">
@@ -142,6 +164,7 @@ export default function ProductDetail(){
                     className="text-white min-w-[40px]" 
                     color="success"
                     onPress={() => setLocalQuantity(prev => Math.max(1, prev - 1))}
+                    isDisabled={product.stockQuantity <= 0}
                   >
                     -
                   </Button>
@@ -153,7 +176,8 @@ export default function ProductDetail(){
                   <Button 
                     className="text-white min-w-[40px]" 
                     color="success"
-                    onPress={() => setLocalQuantity(prev => prev + 1)}
+                    onPress={() => setLocalQuantity(prev => Math.min(product.stockQuantity, prev + 1))}
+                    isDisabled={product.stockQuantity <= 0 || localQuantity >= product.stockQuantity}
                   >
                     +
                   </Button>
@@ -162,6 +186,7 @@ export default function ProductDetail(){
                   className="text-white font-bold flex-1" 
                   color="success"
                   onPress={handleAdd}
+                  isDisabled={product.stockQuantity <= 0}
                 >
                   Add to Cart
                 </Button>
@@ -173,6 +198,7 @@ export default function ProductDetail(){
                   variant="flat"
                   onPress={handleBuyNow}
                   isLoading={isProcessing}
+                  isDisabled={product.stockQuantity <= 0}
                 >
                   Buy Now
                 </Button>

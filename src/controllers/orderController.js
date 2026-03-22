@@ -1,4 +1,5 @@
 import { databases, ID } from "../lib/appwrite";
+import { updateProductStock } from "./adminController";
 
 const DATABASE_ID = '69b5a810001139b4e286';
 const COLLECTION_ID = 'orders';
@@ -34,6 +35,17 @@ export const saveOrder = async (user, totalAmount, paymentReference, items, stat
       orderData
     );
     
+    // Update product stock if order is paid
+    if (status === "paid") {
+      for (const item of items) {
+        const productId = item.$id || item.productId;
+        const currentStock = item.stockQuantity || 0;
+        const quantityOrdered = item.quantity || 1;
+        const newStock = Math.max(0, currentStock - quantityOrdered);
+        await updateProductStock(productId, newStock);
+      }
+    }
+
     console.log("Order saved successfully:", response);
     return response;
   } catch (error) {

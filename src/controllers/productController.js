@@ -131,16 +131,22 @@ export const fetchCategories = async () => {
   try {
     const response = await databases.listDocuments(
       '69b5a810001139b4e286',
-      'categories',   // Replace with your Categories Collection ID
+      'categories',
       [
-        Query.orderAsc('name'), // Sort categories alphabetically
-        Query.limit(100),        // Fetch up to 100 categories
-    Query.select(['name', 'products']) // Must explicitly include the relationship ID
+        Query.orderAsc('name'),
+        Query.limit(100)
       ]
     );
 
-    console.log("Fetched categories:", response.documents);
-    return response.documents;
+    const categoriesWithImages = response.documents.map(category => {
+      if (category.imageId) {
+        const imageUrl = storage.getFileView("productImage", category.imageId);
+        return { ...category, img: imageUrl };
+      }
+      return category;
+    });
+
+    return categoriesWithImages;
   } catch (error) {
     console.error("Error fetching categories:", error.message);
     throw error;

@@ -2,18 +2,22 @@ import { Button, Skeleton } from "@heroui/react";
 import ProductSlide from "../components/ProductSlide";
 import { fetchAllProducts, fetchCategories } from "../controllers/productController";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function CategoriesPage(){
+  const { state } = useLocation();
+  const initialCategory = state?.selectedCategory || "All";
+
   const [categories, setCategories] = useState([])
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    fetchAllProducts().then(products => {
+    fetchAllProducts().then(allProducts => {
       const uniqueCategories = []
-      products.forEach(product => {
+      allProducts.forEach(product => {
         product.categories.forEach(category => {
           if(!uniqueCategories.some(c => c.$id === category.$id)){
             uniqueCategories.push(category)
@@ -22,14 +26,26 @@ export default function CategoriesPage(){
       })
 
       setCategories(uniqueCategories)
-      setProducts(products)
-      setFilteredProducts(products)
+      setProducts(allProducts)
+      
+      // Filter products based on initial category
+      if (initialCategory === "All") {
+        setFilteredProducts(allProducts);
+      } else {
+        const filtered = allProducts.filter(product => 
+          product.categories.some(prodCat => 
+            initialCategory === prodCat.name
+          )
+        );
+        setFilteredProducts(filtered);
+      }
+      
       setIsLoading(false)
     }).catch(error => {
       console.error("Error fetching categories", error)
       setIsLoading(false)
     })
-  }, [])
+  }, [initialCategory])
 
   function handleFilter (categoryName) {
     if(categoryName === "All"){
