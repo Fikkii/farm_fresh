@@ -1,7 +1,7 @@
 import RatedCard from "../components/cards/RatedCard";
 import PricedCard from "../components/cards/PricedCard";
 import {Button, Card, CardBody, CardFooter, Image, Skeleton} from "@heroui/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/cartContext";
 import toast from "react-hot-toast";
 
@@ -29,12 +29,12 @@ export default function ProductSlide({ title = "Featured Products", products = n
           {title}
           <div className="font-normal text-lg text-[#757575]">Fresh from our fields this morning</div>
         </div>
-        <div className="flex gap-2 items-center">
+        <Link to="/categories" className="flex gap-2 items-center text-[#2E7D32]">
           <span>See More</span>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
           </svg>
-        </div>
+        </Link>
       </div>
       <div>
         {card}

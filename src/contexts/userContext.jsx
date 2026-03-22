@@ -9,11 +9,18 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     // Check if user is already logged in on component mount
-    account.get().then(user => {
-      setUser(user);
-      console.log("User logged in", user);
+    account.get().then(userAccount => {
+      if (userAccount.emailVerification) {
+        setUser(userAccount);
+      } else {
+        // Session exists but not verified. We keep the session for resending 
+        // emails but don't set the user state so they stay "logged out".
+        setUser(null);
+      }
+      console.log("Auth Check:", userAccount.emailVerification ? "Verified" : "Unverified");
     }).catch(error => {
-      console.log("No user logged in", error);
+      console.log("No active session", error);
+      setUser(null);
     });
   }, []);
 
@@ -23,29 +30,42 @@ export const UserProvider = ({ children }) => {
   }
 
   async function signup(formData) {
-    await account.create({
-        userId: ID.unique(),
-        name: `${formData.firstname} ${formData.lastname}`,
-        email: formData.email,
-        ...formData
-    });
-    login(formData.email, formData.password);
+    await account.create(
+        ID.unique(),
+        formData.email,
+        formData.password,
+        `${formData.firstname} ${formData.lastname}`
+    );
+    // Create session so we can send the verification email
+    await account.createEmailPasswordSession(formData.email, formData.password);
+    await sendVerificationEmail();
+
+    // We do NOT delete the session, but we set user state to null
+    // so the UI treats them as unauthenticated until they verify.
+    setUser(null);
   }
 
   async function login(email, password) {
-    await account.createEmailPasswordSession({
-        email,
-        password
-    });
-    setUser(await account.get());
+    // This will create a session or throw if credentials wrong
+    await account.createEmailPasswordSession(email, password);
+    const userAccount = await account.get();
+
+    if (!userAccount.emailVerification) {
+      setUser(null);
+      const error = new Error("Verification Required");
+      error.name = "VerificationRequired";
+      throw error;
+    }
+
+    setUser(userAccount);
   }
 
   async function loginWithGoogle() {
-    await account.createOAuth2Session({
-      provider: 'google',
-      success: 'http://localhost:5173/',
-      failure: 'http://localhost:5173/auth/login',
-    })
+    await account.createOAuth2Session(
+      'google',
+      `${window.location.origin}/`,
+      `${window.location.origin}/auth/login`
+    )
   }
 
   async function verifyEmail() {
@@ -55,14 +75,13 @@ export const UserProvider = ({ children }) => {
 
     if (userId && secret) {
       await account.updateVerification(userId, secret);
-      setLoggedInUser(await account.get());
     } else {
       throw new Error("Invalid verification link");
     }
   }
 
   async function sendVerificationEmail() {
-    await account.createVerification('http://localhost:5173/auth/verify');
+    await account.createVerification(`${window.location.origin}/auth/verify/success`);
   }
 
   async function updateProfile(name) {

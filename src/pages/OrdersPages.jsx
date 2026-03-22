@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Image, Divider, Spinner } from "@heroui/react";
+import { Button, Card, CardBody, Image, Divider, Spinner, RadioGroup, Radio, Input, Checkbox } from "@heroui/react";
 import { useCart } from "../contexts/cartContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../contexts/userContext";
@@ -15,6 +15,18 @@ export default function OrdersPage() {
   const location = useLocation();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Delivery states
+  const [deliveryType, setDeliveryType] = useState("pickup");
+  const [addressInfo, setAddressInfo] = useState({
+    address: "",
+    city: "",
+    state: "",
+    saveAddress: false
+  });
+
+  const deliveryFee = deliveryType === "home" ? 1500 : 0;
+  const grandTotal = totalPrice + deliveryFee;
+
   // 1. Stable reference state to prevent re-render disconnects
   const [paymentRef, setPaymentRef] = useState(() => (new Date()).getTime().toString());
 
@@ -22,14 +34,14 @@ export default function OrdersPage() {
   const config = {
     reference: paymentRef, // 2. Using the stable reference
     email: user?.email || "",
-    amount: Math.round(totalPrice * 100), // Paystack expects amount in kobo/cents
+    amount: Math.round(grandTotal * 100), // Paystack expects amount in kobo/cents
     publicKey: 'pk_test_71133a49d4fa2f3e24d489e6ac3d4d8b8ec46951',
   };
 
   const onSuccess = async (reference) => {
     setIsProcessing(true);
     try {
-      await saveOrder(user, totalPrice, reference.reference, cart, "paid");
+      await saveOrder(user, grandTotal, reference.reference, cart, "paid");
       toast.success("Payment Successful! Order placed.");
       clearCart();
       navigate("/order-history");
@@ -46,7 +58,7 @@ export default function OrdersPage() {
   const onClose = async () => {
     toast.error("Payment cancelled.");
     try {
-      await saveOrder(user, totalPrice, config.reference, cart, "failed");
+      await saveOrder(user, grandTotal, config.reference, cart, "failed");
     } catch (error) {
       console.error("Error saving failed order:", error);
     }
@@ -61,6 +73,11 @@ export default function OrdersPage() {
     if (!user) {
       toast.error("Please login to proceed with checkout");
       navigate("/auth/login", { state: { from: location.pathname } });
+      return;
+    }
+
+    if (deliveryType === "home" && (!addressInfo.address || !addressInfo.city || !addressInfo.state)) {
+      toast.error("Please provide complete delivery address info");
       return;
     }
 
@@ -150,7 +167,79 @@ export default function OrdersPage() {
           ))}
         </div>
         
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 flex flex-col gap-6">
+          <Card className="p-4" shadow="sm">
+            <h2 className="text-xl font-bold mb-4">Delivery Options</h2>
+            <div className="flex flex-col gap-4">
+              <div 
+                className={`flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-all ${deliveryType === 'pickup' ? 'border-green-600 bg-green-50' : 'border-gray-100'}`}
+                onClick={() => setDeliveryType('pickup')}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${deliveryType === 'pickup' ? 'border-green-600' : 'border-gray-300'}`}>
+                    {deliveryType === 'pickup' && <div className="w-2.5 h-2.5 rounded-full bg-green-600" />}
+                  </div>
+                  <div>
+                    <p className="font-bold">Farm Pickup</p>
+                    <p className="text-xs text-gray-500">Pick it up yourself</p>
+                  </div>
+                </div>
+                <p className="font-bold text-green-600">FREE</p>
+              </div>
+
+              <div 
+                className={`flex items-center justify-between p-4 border-2 rounded-xl cursor-pointer transition-all ${deliveryType === 'home' ? 'border-green-600 bg-green-50' : 'border-gray-100'}`}
+                onClick={() => setDeliveryType('home')}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${deliveryType === 'home' ? 'border-green-600' : 'border-gray-300'}`}>
+                    {deliveryType === 'home' && <div className="w-2.5 h-2.5 rounded-full bg-green-600" />}
+                  </div>
+                  <div>
+                    <p className="font-bold">Home Delivery</p>
+                    <p className="text-xs text-gray-500">Delivered to your door</p>
+                  </div>
+                </div>
+                <p className="font-bold">₦1,500</p>
+              </div>
+
+              {deliveryType === "home" && (
+                <div className="mt-4 flex flex-col gap-3 p-4 bg-gray-50 rounded-xl animate-in fade-in duration-300">
+                  <Input 
+                    label="Delivery Address" 
+                    placeholder="Enter street address" 
+                    variant="bordered"
+                    value={addressInfo.address}
+                    onValueChange={(val) => setAddressInfo(prev => ({...prev, address: val}))}
+                  />
+                  <div className="flex gap-2">
+                    <Input 
+                      label="City" 
+                      placeholder="City" 
+                      variant="bordered"
+                      value={addressInfo.city}
+                      onValueChange={(val) => setAddressInfo(prev => ({...prev, city: val}))}
+                    />
+                    <Input 
+                      label="State" 
+                      placeholder="State" 
+                      variant="bordered"
+                      value={addressInfo.state}
+                      onValueChange={(val) => setAddressInfo(prev => ({...prev, state: val}))}
+                    />
+                  </div>
+                  <Checkbox 
+                    color="success" 
+                    isSelected={addressInfo.saveAddress}
+                    onValueChange={(val) => setAddressInfo(prev => ({...prev, saveAddress: val}))}
+                  >
+                    Save address for future orders
+                  </Checkbox>
+                </div>
+              )}
+            </div>
+          </Card>
+
           <Card className="p-4" shadow="sm">
             <h2 className="text-xl font-bold mb-4">Order Summary</h2>
             <div className="flex justify-between mb-2">
@@ -159,12 +248,19 @@ export default function OrdersPage() {
             </div>
             <div className="flex justify-between mb-2">
               <span className="">Delivery</span>
-              <span className="text-green-600 font-bold">FREE</span>
+              <span className={`font-bold ${deliveryFee === 0 ? 'text-green-600' : ''}`}>
+                {deliveryFee === 0 ? "FREE" : `₦${deliveryFee.toLocaleString()}`}
+              </span>
             </div>
             <Divider className="my-4" />
             <div className="flex justify-between mb-6 items-center">
               <span className="text-xl font-bold">Total</span>
-              <span className="text-xl font-bold text-[34px] text-green-600">${totalPrice.toFixed(2)}</span>
+              <div className="text-right">
+                <span className="text-xl font-bold text-[34px] text-green-600 block leading-tight">
+                  ${grandTotal.toFixed(2)}
+                </span>
+                {deliveryFee > 0 && <span className="text-xs text-gray-400 font-normal">Includes ₦1,500 delivery fee</span>}
+              </div>
             </div>
             <Button 
               color="success" 
