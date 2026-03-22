@@ -12,11 +12,12 @@ export const UserProvider = ({ children }) => {
     // Check if user is already logged in on component mount
     const checkSession = async () => {
       try {
+        console.log("Checking for active session...");
         const userAccount = await account.get();
-        // Set user state if session exists, regardless of verification
+        console.log("Session found:", userAccount.email);
         setUser(userAccount);
       } catch (error) {
-        console.log("No active session", error);
+        console.log("No active session:", error.message);
         setUser(null);
       } finally {
         setLoading(false);
@@ -81,12 +82,18 @@ export const UserProvider = ({ children }) => {
   };
 
   async function loginWithGoogle() {
-    const baseUrl = getBaseUrl();
-    await account.createOAuth2Session(
-      'google',
-      `${baseUrl}/`,
-      `${baseUrl}/auth/login`
-    )
+    try {
+      const baseUrl = getBaseUrl();
+      console.log("Initiating Google Login with redirect to:", baseUrl);
+      await account.createOAuth2Session(
+        'google',
+        `${baseUrl}/`,
+        `${baseUrl}/auth/login`
+      );
+    } catch (error) {
+      console.error("Google Login initialization failed:", error);
+      throw error;
+    }
   }
 
   async function verifyEmail() {
